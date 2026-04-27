@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"solid_go/grpc/proto"
@@ -19,6 +20,49 @@ func (i *InvoiceServer) CreateInvoice(ctx context.Context, req *proto.Invoice) (
 	return &proto.InvoiceResponse{
 		Message: "Invoice created for customer: " + req.Customer + "",
 	}, nil
+}
+
+func (i *InvoiceServer) UploadInvoices(stream proto.InvoiceService_UploadInvoicesServer) error {
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			return stream.SendAndClose(&proto.InvoiceResponse{Message: "All invoices uploaded"})
+		}
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Received request for invoice for customer: %s\n", resp.Customer)
+	}
+}
+
+func (i *InvoiceServer) ListInvoices(req *proto.Invoice, stream proto.InvoiceService_ListInvoicesServer) error {
+	fmt.Printf("Received request for list of invoices for customer: %s\n", req.Customer)
+	for i := 1; i <= 5; i++ {
+		err := stream.Send(&proto.InvoiceResponse{Message: fmt.Sprintf("Invoice %d", i)})
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (i *InvoiceServer) SyncInvoices(stream proto.InvoiceService_SyncInvoicesServer) error {
+	for {
+		resp, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+		println(resp.Customer)
+		err = stream.Send(&proto.InvoiceResponse{
+			Message: "Synced invoice for: " + resp.Customer,
+		})
+		if err != nil {
+			return err
+		}
+	}
 }
 
 func main() {

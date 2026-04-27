@@ -15,4 +15,7 @@ message InvoiceResponse {
 
 service InvoiceService {
   rpc CreateInvoice(Invoice) returns (InvoiceResponse);
+  rpc ListInvoices(Invoice) returns (stream InvoiceResponse);
+  rpc UploadInvoices(stream Invoice) returns (InvoiceResponse);
+  rpc SyncInvoices(stream Invoice) returns (stream InvoiceResponse);
 }

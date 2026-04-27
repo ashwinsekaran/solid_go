@@ -126,9 +126,12 @@ const file_proto_invoice_proto_rawDesc = "" +
 	"\bcustomer\x18\x01 \x01(\tR\bcustomer\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x01R\x06amount\"+\n" +
 	"\x0fInvoiceResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage2M\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\x8b\x02\n" +
 	"\x0eInvoiceService\x12;\n" +
-	"\rCreateInvoice\x12\x10.invoice.Invoice\x1a\x18.invoice.InvoiceResponseB\tZ\a./protob\x06proto3"
+	"\rCreateInvoice\x12\x10.invoice.Invoice\x1a\x18.invoice.InvoiceResponse\x12<\n" +
+	"\fListInvoices\x12\x10.invoice.Invoice\x1a\x18.invoice.InvoiceResponse0\x01\x12>\n" +
+	"\x0eUploadInvoices\x12\x10.invoice.Invoice\x1a\x18.invoice.InvoiceResponse(\x01\x12>\n" +
+	"\fSyncInvoices\x12\x10.invoice.Invoice\x1a\x18.invoice.InvoiceResponse(\x010\x01B\tZ\a./protob\x06proto3"
 
 var (
 	file_proto_invoice_proto_rawDescOnce sync.Once
@@ -149,9 +152,15 @@ var file_proto_invoice_proto_goTypes = []any{
 }
 var file_proto_invoice_proto_depIdxs = []int32{
 	0, // 0: invoice.InvoiceService.CreateInvoice:input_type -> invoice.Invoice
-	1, // 1: invoice.InvoiceService.CreateInvoice:output_type -> invoice.InvoiceResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	0, // 1: invoice.InvoiceService.ListInvoices:input_type -> invoice.Invoice
+	0, // 2: invoice.InvoiceService.UploadInvoices:input_type -> invoice.Invoice
+	0, // 3: invoice.InvoiceService.SyncInvoices:input_type -> invoice.Invoice
+	1, // 4: invoice.InvoiceService.CreateInvoice:output_type -> invoice.InvoiceResponse
+	1, // 5: invoice.InvoiceService.ListInvoices:output_type -> invoice.InvoiceResponse
+	1, // 6: invoice.InvoiceService.UploadInvoices:output_type -> invoice.InvoiceResponse
+	1, // 7: invoice.InvoiceService.SyncInvoices:output_type -> invoice.InvoiceResponse
+	4, // [4:8] is the sub-list for method output_type
+	0, // [0:4] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
