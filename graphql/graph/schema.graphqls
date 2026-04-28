@@ -1,0 +1,19 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+type Invoice {
+  id: ID!
+  customer: String!
+  amount: Float!
+  status: String!
+}
+
+type Query {
+  invoices: [Invoice!]!
+  invoice(id: ID!): Invoice
+}
+
+type Mutation {
+  createInvoice(customer: String!, amount: Float!, status: String!): Invoice!
+}
