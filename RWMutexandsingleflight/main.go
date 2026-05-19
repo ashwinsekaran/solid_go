@@ -4,11 +4,14 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"sync/atomic"
+	"time"
 
 	"golang.org/x/sync/singleflight"
 )
 
 var group singleflight.Group
+var dbCallCount atomic.Int64
 
 type Cache struct {
 	mu    sync.RWMutex
@@ -22,11 +25,26 @@ type Data struct {
 
 func main() {
 	cache := NewCache()
-	d, err := GetUser("Ashwin", cache)
-	if err != nil {
-		log.Fatalf("error getting user: %v", err)
+	wg := sync.WaitGroup{}
+
+	for i := 1; i <= 1000; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			d, err := GetUser("Ashwin", cache)
+			if err != nil {
+				log.Fatalf("error getting user: %v", err)
+				return
+			}
+			_ = d
+		}()
 	}
-	fmt.Println(d)
+
+	wg.Wait()
+	fmt.Printf("Total DB calls made: %d\n", dbCallCount.Load())
+	fmt.Printf("Requests served:     1000\n")
+	fmt.Printf("DB calls saved:      %d\n", 1000-dbCallCount.Load())
+
 }
 
 func GetUser(userId string, cache *Cache) (Data, error) {
@@ -35,7 +53,7 @@ func GetUser(userId string, cache *Cache) (Data, error) {
 		return data, nil
 	}
 
-	result, err, _ := group.Do(userId, func() (interface{}, error) {
+	result, err, shared := group.Do(userId, func() (interface{}, error) {
 		return GetFromDB(userId), nil
 	})
 	if err != nil {
@@ -44,6 +62,10 @@ func GetUser(userId string, cache *Cache) (Data, error) {
 
 	d := result.(Data)
 	cache.Set(userId, d)
+
+	if shared {
+		fmt.Println("singleflight deduped a call")
+	}
 
 	return d, nil
 }
@@ -69,5 +91,8 @@ func (s *Cache) Set(key string, value Data) {
 }
 
 func GetFromDB(userId string) Data {
-	return Data{}
+	dbCallCount.Add(1)
+	time.Sleep(100 * time.Millisecond)
+
+	return Data{Id: 1, Name: userId}
 }
