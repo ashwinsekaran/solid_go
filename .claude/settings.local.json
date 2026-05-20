@@ -6,7 +6,8 @@
       "Bash(go mod *)",
       "Bash(GOFLAGS=-mod=mod go run github.com/99designs/gqlgen generate --config graphql/gqlgen.yml)",
       "Bash(GOFLAGS=-mod=mod GONOSUMCHECK=* go generate ./graphql/...)",
-      "Bash(GOFLAGS=-mod=mod go run github.com/99designs/gqlgen generate)"
+      "Bash(GOFLAGS=-mod=mod go run github.com/99designs/gqlgen generate)",
+      "Bash(rm /Users/ashwinsekaran/Work/github/solid_go/.git/index.lock)"
     ]
   }
 }

@@ -22,6 +22,9 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 12 | **GraphQL** | [graphql](./graphql) | Schema-first GraphQL API using gqlgen with query and mutation resolvers |
 | 13 | **PostgreSQL** | [postgres](./postgres) | `database/sql` with JSONB columns, parameterised queries, and nested JSON marshalling |
 | 14 | **MongoDB** | [mongo](./mongo) | CRUD + compound index creation + `explain` plan analysis via the official Go driver |
+| 15 | **Batch Flusher** | [flusher](./flusher) | HTTP handlers buffer events in-memory; a ticker-driven goroutine flushes them to the DB in batches, with a final flush on graceful shutdown |
+| 16 | **Rate Limit Middleware** | [ratelimit_middleware](./ratelimit_middleware) | Per-user token-bucket rate limiter applied as an httprouter middleware; each user gets their own bucket keyed by `X-User-ID` |
+| 17 | **URL Shortener** | [url_shortner](./url_shortner) | Short-code → full URL redirect service backed by an RWMutex cache and singleflight to prevent cache-stampede DB calls |
 
 ---
 
@@ -114,3 +117,25 @@ Uses the official `go.mongodb.org/mongo-driver`. Demonstrates:
 - CRUD operations (`InsertOne`, `FindOne`, `UpdateOne`, `DeleteOne`, `InsertMany`)
 - Compound index creation
 - `explain` command to compare index vs. collection scan execution plans
+
+---
+
+## Patterns
+
+### Batch Flusher
+High-throughput writes can overwhelm a database if every HTTP request issues its own `INSERT`. The flusher pattern solves this by buffering events in memory and writing them in bulk on a timer:
+- HTTP handler acquires a mutex, appends the event to a slice, and returns immediately (no DB call per request).
+- A background goroutine ticks every N seconds, locks the buffer, drains it to the DB, then clears the slice.
+- On graceful shutdown, the `quit` channel is closed which triggers one final flush so no buffered events are lost.
+
+### Rate Limit Middleware
+Rather than embedding rate-limiting logic inside each handler, a middleware function wraps any `httprouter.Handle` and intercepts requests before they reach business logic:
+- `RateLimiterStore` holds a per-user `rateLimiter` keyed by `X-User-ID`.
+- Each user gets a token bucket with capacity 10, refilled fully every second.
+- The middleware returns `429 Too Many Requests` when the bucket is empty, leaving the inner handler untouched.
+- A single store-level mutex guards the map; fine for moderate concurrency — shard if needed.
+
+### URL Shortener
+A redirect service that resolves short codes to full URLs with two layers of protection against thundering-herd DB load:
+- **RWMutex cache**: multiple goroutines can read the in-memory map simultaneously (`RLock`); writes are exclusive (`Lock`). This keeps redirects fast under high concurrency.
+- **Singleflight**: on a cache miss, `group.Do` ensures only one `GetFromDB` call runs per short code at a time. All other goroutines racing for the same key block and share the single result, preventing a storm of identical DB queries.
