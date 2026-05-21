@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "llm-gateway"
+  namespace: default
+  labels:
+    app: llm-gateway
+    version: v3
+    service: llm-service
+  annotations:
+
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llm-gateway
+  template:
+    metadata:
+      labels:
+        app: llm-gateway
+    spec:
+      containers:
+        - name: llm-gateway
+          image: ghcr.io/llm-gateway/llm-gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: "llm-gateway-config"
+            - secretRef:
+                name: "llm-gateway-secret"
+          readinessProbe:
+            httpGet:
+              path: /.well-known/ready
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /.well-known/live
+              port: http
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+
+

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "llm-gateway-config"
+  namespace: default
+  labels:
+    app: llm-gateway
+
+data:
+  LOG_LEVEL: "info"
+  MAX_WORKERS: "100"
+  LLM_ENDPOINT: "https://api.llm.internal"
