@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm-gateway
+  namespace: default
+  labels:
+    app: llm-gateway
+    env: prod
+spec:
+  replicas: {{.Values.replicaCount}}

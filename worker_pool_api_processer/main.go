@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/julienschmidt/httprouter"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // Job carries everything a worker needs: the raw payload, the request context
@@ -31,8 +33,12 @@ func main() {
 	jobCh := make(chan Job, 10) // buffer absorbs short bursts without blocking HTTP handlers
 	workers := 100
 
+	m := NewMetrics()
+	reg := m.Register()
+
 	r := httprouter.New()
-	r.Handle("POST", "/post", post(jobCh))
+	r.Handle("POST", "/post", middleware(m, post(jobCh, m)))
+	r.Handler("GET", "/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
 
 	server := http.Server{
 		Addr:         ":8080",
@@ -78,7 +84,7 @@ func main() {
 
 // post returns an httprouter.Handle that enqueues a job and synchronously waits for its result.
 // The handler blocks on job.ResCh, so the HTTP response is sent only after the worker finishes.
-func post(jobCh chan<- Job) httprouter.Handle {
+func post(jobCh chan<- Job, m *Metrics) httprouter.Handle {
 	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 		var job Job
 		job.ResCh = make(chan Result, 1) // size-1 buffer: worker never blocks on send
@@ -107,4 +113,19 @@ func post(jobCh chan<- Job) httprouter.Handle {
 // Replace this with real image processing; kept as a passthrough for demonstration.
 func processImage(image []byte) ([]byte, error) {
 	return image, nil
+}
+
+func middleware(m *Metrics, next httprouter.Handle) httprouter.Handle {
+	return func(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+		m.ActiveRequests.With(prometheus.Labels{"method": r.Method, "path": r.URL.Path}).Inc()
+		defer m.ActiveRequests.With(prometheus.Labels{"method": r.Method, "path": r.URL.Path}).Dec()
+
+		timer := prometheus.NewTimer(prometheus.ObserverFunc(func(duration float64) {
+			m.ReqDuration.With(prometheus.Labels{"method": r.Method, "path": r.URL.Path}).Observe(duration)
+		}))
+		defer timer.ObserveDuration()
+
+		m.TotalRequests.Inc()
+		next(w, r, p)
+	}
 }
