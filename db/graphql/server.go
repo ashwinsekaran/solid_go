@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"solid_go/graphql/graph"
+	graph2 "solid_go/db/graphql/graph"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/handler/extension"
@@ -24,7 +24,7 @@ func main() {
 
 	// handler.New wires the generated schema (types + resolvers) into a gqlgen server.
 	// graph.Config lets you inject middleware (field-level auth, logging, etc.) if needed.
-	srv := handler.New(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+	srv := handler.New(graph2.NewExecutableSchema(graph2.Config{Resolvers: &graph2.Resolver{}}))
 
 	// Transports determine which HTTP methods the server accepts for GraphQL operations.
 	srv.AddTransport(transport.Options{}) // responds to OPTIONS for CORS preflight

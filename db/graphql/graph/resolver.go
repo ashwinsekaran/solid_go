@@ -1,6 +1,8 @@
 package graph
 
-import "solid_go/graphql/graph/model"
+import (
+	"solid_go/db/graphql/graph/model"
+)
 
 // This file will not be regenerated automatically.
 //

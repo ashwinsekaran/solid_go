@@ -8,20 +8,20 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 
 | # | Concept | Folder | Description |
 |---|---------|--------|-------------|
-| 1 | **Single Responsibility Principle** | [s_single_responsibility](./s_single_responsibility) | Each function does exactly one job — print, save, or email an invoice |
-| 2 | **Open / Closed Principle** | [o_open_closed](./o_open_closed) | Add new discount strategies without touching existing code |
-| 3 | **Liskov Substitution Principle** | [l_liskov](./l_liskov) | Any `InvoiceExporter` implementation can replace another without breaking callers |
-| 4 | **Interface Segregation Principle** | [i_interface_segregation](./i_interface_segregation) | Split fat interfaces into `InvoicePrinter` and `InvoiceExporter` so types only implement what they need |
-| 5 | **Dependency Inversion Principle** | [d_dependency_inversion](./d_dependency_inversion) | `InvoiceService` depends on an `InvoiceRepository` interface, not a concrete MySQL or MongoDB struct |
+| 1 | **Single Responsibility Principle** | [s_single_responsibility](solid_principles_go/s_single_responsibility) | Each function does exactly one job — print, save, or email an invoice |
+| 2 | **Open / Closed Principle** | [o_open_closed](solid_principles_go/o_open_closed) | Add new discount strategies without touching existing code |
+| 3 | **Liskov Substitution Principle** | [l_liskov](solid_principles_go/l_liskov) | Any `InvoiceExporter` implementation can replace another without breaking callers |
+| 4 | **Interface Segregation Principle** | [i_interface_segregation](solid_principles_go/i_interface_segregation) | Split fat interfaces into `InvoicePrinter` and `InvoiceExporter` so types only implement what they need |
+| 5 | **Dependency Inversion Principle** | [d_dependency_inversion](solid_principles_go/d_dependency_inversion) | `InvoiceService` depends on an `InvoiceRepository` interface, not a concrete MySQL or MongoDB struct |
 | 6 | **Goroutine Patterns** | [goroutine_patterns](./goroutine_patterns) | Fan-in (merge multiple channels), fan-out worker pool, and multi-stage pipeline |
 | 7 | **RWMutex + Singleflight** | [RWMutexandsingleflight](./RWMutexandsingleflight) | Concurrent-safe cache with read/write locks; singleflight collapses duplicate in-flight DB calls into one |
 | 8 | **Worker Pool (HTTP)** | [worker_pool_api_processer](./worker_pool_api_processer) | Fixed-size goroutine pool processes HTTP-submitted jobs; request blocks until its result is ready |
 | 9 | **Rate Limiting (Token Bucket)** | [ratelimiting](./ratelimiting) | Token-bucket algorithm with mutex-protected state controls request throughput |
 | 10 | **gRPC** | [grpc](./grpc) | Unary, server-streaming, client-streaming, and bidirectional-streaming RPCs over Protocol Buffers |
 | 11 | **REST API** | [rest](./rest) | Layered HTTP server: handler → use-case → repository, with graceful shutdown |
-| 12 | **GraphQL** | [graphql](./graphql) | Schema-first GraphQL API using gqlgen with query and mutation resolvers |
-| 13 | **PostgreSQL** | [postgres](./postgres) | `database/sql` with JSONB columns, parameterised queries, and nested JSON marshalling |
-| 14 | **MongoDB** | [mongo](./mongo) | CRUD + compound index creation + `explain` plan analysis via the official Go driver |
+| 12 | **GraphQL** | [graphql](db/graphql) | Schema-first GraphQL API using gqlgen with query and mutation resolvers |
+| 13 | **PostgreSQL** | [postgres](db/postgres) | `database/sql` with JSONB columns, parameterised queries, and nested JSON marshalling |
+| 14 | **MongoDB** | [mongo](db/mongo) | CRUD + compound index creation + `explain` plan analysis via the official Go driver |
 | 15 | **Batch Flusher** | [flusher](./flusher) | HTTP handlers buffer events in-memory; a ticker-driven goroutine flushes them to the DB in batches, with a final flush on graceful shutdown |
 | 16 | **Rate Limit Middleware** | [ratelimit_middleware](./ratelimit_middleware) | Per-user token-bucket rate limiter applied as an httprouter middleware; each user gets their own bucket keyed by `X-User-ID` |
 | 17 | **URL Shortener** | [url_shortner](./url_shortner) | Short-code → full URL redirect service backed by an RWMutex cache and singleflight to prevent cache-stampede DB calls |

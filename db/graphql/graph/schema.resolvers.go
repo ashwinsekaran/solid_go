@@ -7,7 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
-	"solid_go/graphql/graph/model"
+	"solid_go/db/graphql/graph/model"
 )
 
 // CreateInvoice is the resolver for the createInvoice mutation.

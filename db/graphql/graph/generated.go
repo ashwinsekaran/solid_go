@@ -9,7 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"solid_go/graphql/graph/model"
+	"solid_go/db/graphql/graph/model"
 	"strconv"
 	"sync/atomic"
 
