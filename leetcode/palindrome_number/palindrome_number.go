@@ -4,6 +4,22 @@ import "fmt"
 
 // LeetCode 9 - Palindrome Number
 //
+// Problem:
+//   Given an integer x, return true if it reads the same forward and backward.
+//   Negative numbers are never palindromes.
+//
+// Example 1:
+//   Input:  121   Output: true
+//   Explanation: 121 reads the same left-to-right and right-to-left.
+//
+// Example 2:
+//   Input:  -121  Output: false
+//   Explanation: Reads -121 forward but 121- backward.
+//
+// Example 3:
+//   Input:  10    Output: false
+//   Explanation: Reads 10 forward but 01 backward (leading zero).
+//
 // Pseudo code:
 //   negative numbers and multiples of 10 (except 0) are not palindromes
 //   reverse the second half digit by digit

@@ -4,6 +4,24 @@ import "fmt"
 
 // LeetCode 126 - Word Ladder II
 //
+// Problem:
+//   Given beginWord, endWord, and a wordList, find ALL shortest transformation
+//   sequences from beginWord to endWord. Each step changes exactly one letter
+//   and the resulting word must be in wordList.
+//
+// Example:
+//   Input:  beginWord = "hit", endWord = "cog"
+//           wordList  = ["hot","dot","dog","lot","log","cog"]
+//   Output: [["hit","hot","dot","dog","cog"],
+//            ["hit","hot","lot","log","cog"]]
+//
+//   Explanation:
+//   hit → hot (change 'i' to 'o')
+//   hot → dot (change 'h' to 'd')  OR  hot → lot (change 'h' to 'l')
+//   dot → dog / lot → log
+//   dog → cog / log → cog
+//   Both paths have length 5 (shortest).
+//
 // Pseudo code:
 //   BFS layer by layer from beginWord; build parent map (word -> list of predecessors)
 //   stop once endWord is found (don't expand further — shortest path only)

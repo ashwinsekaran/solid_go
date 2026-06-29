@@ -4,6 +4,23 @@ import "fmt"
 
 // LeetCode 234 - Palindrome Linked List
 //
+// Problem:
+//   Given the head of a singly linked list, return true if it is a palindrome.
+//   Must run in O(n) time and O(1) space.
+//
+// Example 1:
+//   Input:  1 -> 2 -> 2 -> 1
+//   Output: true
+//
+// Example 2:
+//   Input:  1 -> 2
+//   Output: false
+//
+//   Explanation:
+//   Find the middle with slow/fast pointers.
+//   Reverse the second half in-place.
+//   Compare first half and reversed second half node by node.
+//
 // Pseudo code:
 //   find middle using slow/fast pointers
 //   reverse second half in-place

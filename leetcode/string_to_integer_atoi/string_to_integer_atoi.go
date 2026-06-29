@@ -7,6 +7,26 @@ import (
 
 // LeetCode 8 - String to Integer (atoi)
 //
+// Problem:
+//   Implement atoi which converts a string to a 32-bit signed integer.
+//   Rules: skip leading whitespace → read optional sign → read digits → stop at
+//   first non-digit → clamp result to [−2³¹, 2³¹−1].
+//
+// Example 1:
+//   Input:  "42"          Output: 42
+//
+// Example 2:
+//   Input:  "   -42"      Output: -42
+//   Explanation: leading spaces ignored, '-' sign read, then 42.
+//
+// Example 3:
+//   Input:  "4193 with words"  Output: 4193
+//   Explanation: stops at the space after 4193.
+//
+// Example 4:
+//   Input:  "-91283472332"  Output: -2147483648
+//   Explanation: value underflows 32-bit min, so clamped to INT_MIN.
+//
 // Pseudo code:
 //   skip leading whitespace
 //   read optional sign

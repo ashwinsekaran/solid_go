@@ -4,6 +4,22 @@ import "fmt"
 
 // LeetCode 432 - All O'one Data Structure
 //
+// Problem:
+//   Design a data structure that supports:
+//     Inc(key)        – increment count of key by 1
+//     Dec(key)        – decrement count of key by 1 (remove if count hits 0)
+//     GetMaxKey()     – return any key with the highest count
+//     GetMinKey()     – return any key with the lowest count
+//   All operations must run in O(1) time.
+//
+// Example:
+//   Inc("a"), Inc("b"), Inc("b"), Inc("c"), Inc("c"), Inc("c")
+//   counts: a=1, b=2, c=3
+//   GetMaxKey() → "c"   (highest count = 3)
+//   GetMinKey() → "a"   (lowest  count = 1)
+//   Dec("c"), Dec("c"), Dec("c")
+//   GetMaxKey() → "b"   (c removed, b has highest count = 2)
+//
 // Pseudo code:
 //   doubly linked list of buckets; each bucket holds a count + set of keys
 //   map: key -> its current bucket

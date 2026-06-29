@@ -7,6 +7,20 @@ import (
 
 // LeetCode 1366 - Rank Teams by Votes
 //
+// Problem:
+//   Each voter ranks all teams. Rank teams by 1st-place votes; break ties
+//   by 2nd-place votes, then 3rd-place, etc. Final tie-break: alphabetical.
+//
+// Example:
+//   Input:  votes = ["ABC","ACB","ABC","ACB","ACB"]
+//   Output: "ACB"
+//
+//   Explanation:
+//   Position-0 votes: A=5, B=0, C=0  → A is 1st
+//   Position-1 votes: B=2, C=3       → C before B
+//   Position-2 votes: (remaining)    → B last
+//   Final ranking: A, C, B → "ACB"
+//
 // Pseudo code:
 //   for each team count votes at each position
 //   sort teams: compare position-by-position vote counts descending

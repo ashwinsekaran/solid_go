@@ -4,6 +4,26 @@ import "fmt"
 
 // LeetCode 103 - Binary Tree Zigzag Level Order Traversal
 //
+// Problem:
+//   Given the root of a binary tree, return the zigzag level order traversal
+//   of its nodes' values (left to right, then right to left for the next level,
+//   alternating).
+//
+// Example:
+//   Input:
+//       3
+//      / \
+//     9  20
+//       /  \
+//      15   7
+//
+//   Output: [[3], [20,9], [15,7]]
+//
+//   Explanation:
+//   Level 0 → left-to-right:  [3]
+//   Level 1 → right-to-left: [20, 9]
+//   Level 2 → left-to-right: [15, 7]
+//
 // Pseudo code:
 //   BFS level by level
 //   even levels: fill left-to-right

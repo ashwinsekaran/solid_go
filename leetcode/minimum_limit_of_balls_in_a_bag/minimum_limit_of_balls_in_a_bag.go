@@ -4,6 +4,22 @@ import "fmt"
 
 // LeetCode 1760 - Minimum Limit of Balls in a Bag
 //
+// Problem:
+//   You have bags of balls. In one operation you can split a bag into two bags.
+//   After at most maxOperations splits, minimise the maximum number of balls
+//   in any single bag (the "penalty").
+//
+// Example 1:
+//   Input:  nums = [9], maxOperations = 2
+//   Output: 3
+//   Explanation:
+//   Split 9 → [6,3] (1 op), then [3,3,3] (2 ops). Max = 3.
+//
+// Example 2:
+//   Input:  nums = [2,4,8,2], maxOperations = 4
+//   Output: 2
+//   Explanation: Split 8 twice and 4 once. Every bag has ≤ 2 balls.
+//
 // Pseudo code:
 //   binary search on the answer (max balls allowed in any bag)
 //   for a given max size: ops needed = sum of ceil(n/max)-1 for each bag

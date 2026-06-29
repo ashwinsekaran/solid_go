@@ -4,6 +4,25 @@ import "fmt"
 
 // LeetCode 199 - Binary Tree Right Side View
 //
+// Problem:
+//   Given the root of a binary tree, imagine yourself standing on the right
+//   side of it. Return the values of the nodes you can see, ordered top to bottom.
+//
+// Example:
+//   Input:
+//     1
+//    / \
+//   2   3
+//    \
+//     5
+//
+//   Output: [1, 3, 5]
+//
+//   Explanation:
+//   Level 0: rightmost visible = 1
+//   Level 1: rightmost visible = 3  (3 hides 2)
+//   Level 2: rightmost visible = 5  (only node at this level)
+//
 // Pseudo code:
 //   BFS level-order; for each level record only the last node's value
 //   return collected values

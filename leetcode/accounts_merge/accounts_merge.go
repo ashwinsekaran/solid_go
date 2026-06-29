@@ -7,6 +7,26 @@ import (
 
 // LeetCode 721 - Accounts Merge
 //
+// Problem:
+//   Each account is a list where accounts[i][0] is the name and the rest are
+//   email addresses. Two accounts belong to the same person if they share at
+//   least one email. Merge all such accounts and return them sorted.
+//
+// Example:
+//   Input:
+//   [["John","johnsmith@mail.com","john_newyork@mail.com"],
+//    ["John","johnsmith@mail.com","john00@mail.com"],
+//    ["Mary","mary@mail.com"],
+//    ["John","johnnybravo@mail.com"]]
+//
+//   Output:
+//   [["John","john00@mail.com","john_newyork@mail.com","johnsmith@mail.com"],
+//    ["Mary","mary@mail.com"],
+//    ["John","johnnybravo@mail.com"]]
+//
+//   Explanation: accounts 0 and 1 share "johnsmith@mail.com" so they merge.
+//   Account 3 shares no email with the others so it stays separate.
+//
 // Pseudo code:
 //   Union-Find: each email starts as its own root
 //   for each account union all its emails together (via first email)

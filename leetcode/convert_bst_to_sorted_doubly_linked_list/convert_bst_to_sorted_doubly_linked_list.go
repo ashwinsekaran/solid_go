@@ -4,6 +4,26 @@ import "fmt"
 
 // LeetCode 426 - Convert Binary Search Tree to Sorted Doubly Linked List
 //
+// Problem:
+//   Convert a BST to a sorted circular doubly linked list in-place.
+//   Left pointer acts as the previous pointer; right pointer acts as next.
+//   The list must be circular: tail.Next = head, head.Prev = tail.
+//
+// Example:
+//   Input BST:
+//       4
+//      / \
+//     2   5
+//    / \
+//   1   3
+//
+//   Output (circular doubly linked list, values in order):
+//   1 <-> 2 <-> 3 <-> 4 <-> 5 <-> (back to 1)
+//
+//   Explanation:
+//   In-order traversal of BST gives sorted order: 1,2,3,4,5.
+//   We link them left↔right as prev↔next and close the circle.
+//
 // Pseudo code:
 //   in-order traversal (left, root, right)
 //   link each visited node to prev; track head (first visited)

@@ -7,6 +7,18 @@ import (
 
 // LeetCode 791 - Custom Sort String
 //
+// Problem:
+//   order is a string with no duplicates defining a custom character order.
+//   Rearrange the characters of s so that they match the order in order.
+//   Characters not in order can appear anywhere.
+//
+// Example:
+//   Input:  order = "cba", s = "abcd"
+//   Output: "cbad"  (or "dcba" — any order where c before b before a)
+//
+//   Explanation:
+//   'c','b','a' appear in order; 'd' is not in order so it can go anywhere.
+//
 // Pseudo code:
 //   assign rank to each char in order string
 //   sort s by rank (chars not in order get rank 0, appear first/last in ties)

@@ -7,6 +7,28 @@ import (
 
 // LeetCode 282 - Expression Add Operators
 //
+// Problem:
+//   Given a string num of digits and an integer target, return all ways to
+//   insert '+', '-', or '*' between digits so the expression evaluates to target.
+//   Numbers in the expression must not have leading zeros.
+//
+// Example 1:
+//   Input:  num = "123", target = 6
+//   Output: ["1+2+3", "1*2*3"]
+//   Explanation: 1+2+3=6 and 1*2*3=6.
+//
+// Example 2:
+//   Input:  num = "232", target = 8
+//   Output: ["2*3+2", "2+3*2"]
+//
+// Example 3:
+//   Input:  num = "105", target = 5
+//   Output: ["1*0+5", "10-5"]
+//
+//   Key trick: track the last multiplied term separately so that when '*' is
+//   chosen, we can undo the previous addition and re-apply with multiplication.
+//   e.g. for "1+2*3": after "1+2", val=3, last=2. Then *3: val = 3-2 + 2*3 = 7.
+//
 // Pseudo code:
 //   backtracking over all splits of num string
 //   track: current expression string, running value, last multiplied term

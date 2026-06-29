@@ -4,6 +4,21 @@ import "fmt"
 
 // LeetCode 25 - Reverse Nodes in k-Group
 //
+// Problem:
+//   Given the head of a linked list, reverse the nodes of the list k at a time
+//   and return the modified list. If the remaining nodes are fewer than k, leave
+//   them as-is.
+//
+// Example 1:
+//   Input:  1 -> 2 -> 3 -> 4 -> 5,  k = 2
+//   Output: 2 -> 1 -> 4 -> 3 -> 5
+//   Explanation: Reverse pairs (1,2) and (3,4); 5 is left alone.
+//
+// Example 2:
+//   Input:  1 -> 2 -> 3 -> 4 -> 5,  k = 3
+//   Output: 3 -> 2 -> 1 -> 4 -> 5
+//   Explanation: Reverse first group of 3; only 2 remain so they stay.
+//
 // Pseudo code:
 //   check if at least k nodes remain; if not return head as-is
 //   reverse exactly k nodes iteratively

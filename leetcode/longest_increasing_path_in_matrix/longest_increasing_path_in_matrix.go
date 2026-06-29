@@ -4,6 +4,23 @@ import "fmt"
 
 // LeetCode 329 - Longest Increasing Path in a Matrix
 //
+// Problem:
+//   Given an m x n integers matrix, return the length of the longest increasing
+//   path. From each cell, you can move in 4 directions (up/down/left/right).
+//   You cannot move diagonally or outside the boundary. Each step must be strictly
+//   greater than the previous cell.
+//
+// Example:
+//   Input:
+//     [[9, 9, 4],
+//      [6, 6, 8],
+//      [2, 1, 1]]
+//   Output: 4
+//
+//   Explanation:
+//   Longest path: 1 → 2 → 6 → 9  (length 4)
+//   Starting at matrix[2][1]=1, go up to 2, up to 6, up to 9.
+//
 // Pseudo code:
 //   DFS with memoization from every cell
 //   from cell (i,j): try all 4 neighbors with strictly greater value

@@ -4,6 +4,26 @@ import "fmt"
 
 // LeetCode 498 - Diagonal Traverse
 //
+// Problem:
+//   Given an m x n matrix, return all elements in diagonal order
+//   (alternating up-right and down-left diagonals).
+//
+// Example:
+//   Input:
+//   [[1, 2, 3],
+//    [4, 5, 6],
+//    [7, 8, 9]]
+//
+//   Output: [1, 2, 4, 7, 5, 3, 6, 8, 9]
+//
+//   Explanation (diagonals):
+//   d=0 ↗: [1]          (up-right)
+//   d=1 ↙: [2, 4]       (down-left)
+//   d=2 ↗: [7, 5, 3]    (up-right)  ← but written 3,5,7 → reversed to [3,5,7]... no:
+//   Actually: d=2 goes up: row decreases col increases → 7→5→3... wait output shows [7,5,3]
+//   d=3 ↙: [6, 8]       (down-left)
+//   d=4 ↗: [9]          (up-right)
+//
 // Pseudo code:
 //   iterate diagonals d = 0 to m+n-2
 //   even d: go up-right (row decreases, col increases)

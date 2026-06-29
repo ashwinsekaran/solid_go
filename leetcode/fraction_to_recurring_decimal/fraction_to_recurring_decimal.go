@@ -8,6 +8,27 @@ import (
 
 // LeetCode 166 - Fraction to Recurring Decimal
 //
+// Problem:
+//   Given two integers numerator and denominator, return the fraction as a string.
+//   If the decimal part is repeating, enclose the repeating part in parentheses.
+//
+// Example 1:
+//   Input:  numerator = 1, denominator = 2
+//   Output: "0.5"
+//
+// Example 2:
+//   Input:  numerator = 1, denominator = 3
+//   Output: "0.(3)"
+//   Explanation: 1/3 = 0.3333... the '3' repeats forever.
+//
+// Example 3:
+//   Input:  numerator = 4, denominator = 333
+//   Output: "0.(012)"
+//   Explanation: 4/333 = 0.012012012... the '012' block repeats.
+//
+//   Key insight: track each remainder's position in the decimal string.
+//   When a remainder repeats, the digits from that position onward recur.
+//
 // Pseudo code:
 //   handle sign and zero separately
 //   integer part = num / den

@@ -4,6 +4,19 @@ import "fmt"
 
 // LeetCode 64 - Minimum Path Sum
 //
+// Problem:
+//   Given an m x n grid of non-negative integers, find a path from the
+//   top-left to the bottom-right that minimises the sum of numbers along the
+//   path. You can only move right or down.
+//
+// Example:
+//   Input:  grid = [[1,3,1],[1,5,1],[4,2,1]]
+//   Output: 7
+//
+//   Explanation:
+//   Path: 1 → 3 → 1 → 1 → 1  =  7
+//   (right, right, down, down)
+//
 // Pseudo code:
 //   for each cell (i,j):
 //     if top-left corner: skip

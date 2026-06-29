@@ -7,6 +7,21 @@ import (
 
 // LeetCode 1235 - Maximum Profit in Job Scheduling
 //
+// Problem:
+//   You have n jobs. Job i runs from startTime[i] to endTime[i] and earns profit[i].
+//   You can only do one job at a time (no overlapping). Return the max total profit.
+//
+// Example:
+//   Input:  startTime=[1,2,3,3], endTime=[3,4,5,6], profit=[50,10,40,70]
+//   Output: 120
+//
+//   Explanation:
+//   Job 0: [1,3) earns 50
+//   Job 3: [3,6) earns 70
+//   Total: 50 + 70 = 120
+//   (Cannot combine jobs 0+2 as job 2 starts at 3 which overlaps nothing,
+//   but job 3 earns more than job 2.)
+//
 // Pseudo code:
 //   sort jobs by end time
 //   dp[i] = max profit considering first i jobs

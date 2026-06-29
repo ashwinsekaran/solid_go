@@ -4,6 +4,24 @@ import "fmt"
 
 // LeetCode 378 - Kth Smallest Element in a Sorted Matrix
 //
+// Problem:
+//   Given an n×n matrix where each row and column is sorted in ascending order,
+//   return the k-th smallest element.
+//
+// Example:
+//   Input:
+//     matrix = [[1, 5, 9],
+//               [10,11,13],
+//               [12,13,15]]
+//     k = 8
+//   Output: 13
+//
+//   Explanation:
+//   Sorted elements: [1,5,9,10,11,12,13,13,15]
+//   The 8th smallest is 13.
+//   We binary search on the value range and count how many elements ≤ mid
+//   using a staircase walk from the bottom-left corner.
+//
 // Pseudo code:
 //   binary search on the value range [matrix[0][0], matrix[n-1][n-1]]
 //   for a mid value, count elements <= mid using a staircase walk from bottom-left

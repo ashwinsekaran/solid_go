@@ -4,6 +4,21 @@ import "fmt"
 
 // LeetCode 205 - Isomorphic Strings
 //
+// Problem:
+//   Two strings s and t are isomorphic if the characters in s can be replaced
+//   to get t. Every character in s maps to exactly one character in t, and
+//   no two characters map to the same character.
+//
+// Example 1:
+//   Input:  s = "egg", t = "add"
+//   Output: true
+//   Explanation: 'e' -> 'a', 'g' -> 'd'
+//
+// Example 2:
+//   Input:  s = "foo", t = "bar"
+//   Output: false
+//   Explanation: 'o' would need to map to both 'a' and 'r'
+//
 // Pseudo code:
 //   maintain s->t and t->s character maps
 //   for each pair (cs, ct):

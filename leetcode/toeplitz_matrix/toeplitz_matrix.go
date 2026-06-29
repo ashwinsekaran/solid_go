@@ -4,6 +4,23 @@ import "fmt"
 
 // LeetCode 766 - Toeplitz Matrix
 //
+// Problem:
+//   A matrix is Toeplitz if every diagonal from top-left to bottom-right has
+//   the same value. Return true if the matrix is Toeplitz.
+//
+// Example 1:
+//   Input:
+//   [[1,2,3,4],
+//    [5,1,2,3],
+//    [9,5,1,2]]
+//   Output: true
+//   Explanation: Each top-left→bottom-right diagonal is constant:
+//   [9], [5,5], [1,1,1], [2,2,2], [3,3], [4]
+//
+// Example 2:
+//   Input:  [[1,2],[2,2]]   Output: false
+//   Explanation: Diagonal [1,2] is not constant.
+//
 // Pseudo code:
 //   for every cell (i,j) not in the first row or first col:
 //     it must equal matrix[i-1][j-1] (its top-left diagonal neighbour)

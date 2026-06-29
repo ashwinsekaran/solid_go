@@ -4,6 +4,22 @@ import "fmt"
 
 // LeetCode 33 - Search in Rotated Sorted Array
 //
+// Problem:
+//   An ascending array was rotated at some pivot. Given the rotated array and a
+//   target, return the index of target or -1 if not found. Must be O(log n).
+//
+// Example 1:
+//   Input:  nums = [4,5,6,7,0,1,2], target = 0
+//   Output: 4
+//   Explanation: The array was rotated at index 4. Target 0 is at index 4.
+//
+// Example 2:
+//   Input:  nums = [4,5,6,7,0,1,2], target = 3
+//   Output: -1
+//
+//   Key insight: at any mid point, one of the two halves is always sorted.
+//   Check which half is sorted, then decide which half the target falls in.
+//
 // Pseudo code:
 //   binary search; one half is always sorted
 //   if left half sorted and target in [nums[lo], nums[mid]): go left

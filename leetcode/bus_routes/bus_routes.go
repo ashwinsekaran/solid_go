@@ -4,6 +4,21 @@ import "fmt"
 
 // LeetCode 815 - Bus Routes
 //
+// Problem:
+//   You are given an array routes where routes[i] is a list of bus stops for
+//   bus i. You start at source and want to reach target. You can board any
+//   bus at any stop it visits. Return the minimum number of buses you need to
+//   take, or -1 if it's impossible.
+//
+// Example:
+//   Input:  routes = [[1,2,7],[3,6,7]], source = 1, target = 6
+//   Output: 2
+//
+//   Explanation:
+//   Board bus 0 at stop 1, ride to stop 7.
+//   Board bus 1 at stop 7, ride to stop 6.
+//   That is 2 buses total.
+//
 // Pseudo code:
 //   build stop -> list of routes map
 //   BFS by route (not individual stop)

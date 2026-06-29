@@ -7,6 +7,22 @@ import (
 
 // LeetCode 443 - String Compression
 //
+// Problem:
+//   Given a char array, compress it in-place using run-length encoding.
+//   For each group of consecutive identical characters:
+//     - write the character
+//     - if count > 1, write each digit of the count as separate characters
+//   Return the new length of the array.
+//
+// Example 1:
+//   Input:  ['a','a','b','b','c','c','c']
+//   Output: 6, array becomes ['a','2','b','2','c','3']
+//
+// Example 2:
+//   Input:  ['a','b','b','b','b','b','b','b','b','b','b','b','b']
+//   Output: 4, array becomes ['a','b','1','2']
+//   Explanation: 'a' appears once (no count written), 'b' appears 12 times → "b12"
+//
 // Pseudo code:
 //   write pointer tracks where to write next
 //   group consecutive identical chars; write char then count (if > 1)
