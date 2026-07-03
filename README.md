@@ -25,6 +25,7 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 15 | **Batch Flusher** | [flusher](./flusher) | HTTP handlers buffer events in-memory; a ticker-driven goroutine flushes them to the DB in batches, with a final flush on graceful shutdown |
 | 16 | **Rate Limit Middleware** | [ratelimit_middleware](./ratelimit_middleware) | Per-user token-bucket rate limiter applied as an httprouter middleware; each user gets their own bucket keyed by `X-User-ID` |
 | 17 | **URL Shortener** | [url_shortner](./url_shortner) | Short-code → full URL redirect service backed by an RWMutex cache and singleflight to prevent cache-stampede DB calls |
+| 18 | **Fan-in/Fan-out (Prime Finder)** | [fanin_fanout_prime_number](./fanin_fanout_prime_number) | CPU-bound prime search fanned out across `NumCPU` workers, then fanned back into a single result stream |
 
 ---
 
@@ -78,6 +79,9 @@ Goroutines are chained: each stage reads from the previous stage's channel, tran
 
 ### Token Bucket Rate Limiter
 A bucket holds up to `capacity` tokens. Each request consumes one token (`Allow()`). Tokens are refilled at `refillRate` per `refillDuration`. A `sync.Mutex` serialises concurrent access to the mutable token count.
+
+### Fan-in / Fan-out (Prime Finder)
+A single `repeatFunc` goroutine produces an unbounded stream of random integers. Since primality testing (naive trial division) is CPU-bound, the stream is fanned out to one `primeFinder` goroutine per `runtime.NumCPU()`, each reading from the same shared channel. Their outputs are fanned back into one stream via `fanIn`, which uses a `WaitGroup` to close the merged channel only after every worker's channel has closed. A `take` helper caps consumption to the first N primes found.
 
 ---
 
