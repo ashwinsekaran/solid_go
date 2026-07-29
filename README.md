@@ -26,6 +26,8 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 16 | **Rate Limit Middleware** | [ratelimit_middleware](./ratelimit_middleware) | Per-user token-bucket rate limiter applied as an httprouter middleware; each user gets their own bucket keyed by `X-User-ID` |
 | 17 | **URL Shortener** | [url_shortner](./url_shortner) | Short-code → full URL redirect service backed by an RWMutex cache and singleflight to prevent cache-stampede DB calls |
 | 18 | **Fan-in/Fan-out (Prime Finder)** | [fanin_fanout_prime_number](./fanin_fanout_prime_number) | CPU-bound prime search fanned out across `NumCPU` workers, then fanned back into a single result stream |
+| 19 | **Observability & Metrics** | [observability](./observability) | Cheat-sheet notes: percentiles/histograms, RED & USE methods, SLI/SLO/SLA, MTTA/MTTR/MTBF, cardinality, and alerting philosophy |
+| 20 | **OpenTelemetry (OTel)** | [otel](./otel) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
 
 ---
 
@@ -143,3 +145,23 @@ Rather than embedding rate-limiting logic inside each handler, a middleware func
 A redirect service that resolves short codes to full URLs with two layers of protection against thundering-herd DB load:
 - **RWMutex cache**: multiple goroutines can read the in-memory map simultaneously (`RLock`); writes are exclusive (`Lock`). This keeps redirects fast under high concurrency.
 - **Singleflight**: on a cache miss, `group.Do` ensures only one `GetFromDB` call runs per short code at a time. All other goroutines racing for the same key block and share the single result, preventing a storm of identical DB queries.
+
+---
+
+## Observability
+
+Two study cheat-sheets that pair with the tracing and metrics used throughout this repo. These are reference notes rather than runnable code.
+
+### Observability & Metrics
+[observability/observability.md](observability/observability.md) — the fundamentals of measuring a system:
+- **Percentiles & histograms** — why averages hide tail pain, and how cumulative buckets let you query any percentile later.
+- **RED** (Rate, Errors, Duration) for request-driven services and **USE** (Utilization, Saturation, Errors) for resources.
+- **SLI / SLO / SLA** and error budgets; **MTTA / MTTR / MTBF** incident metrics.
+- **Histogram vs Summary**, **cardinality** footguns, **metrics vs logs vs traces**, distributed tracing, and alerting philosophy (symptom vs cause, burn-rate alerts).
+
+### OpenTelemetry (OTel)
+[otel/otel.md](otel/otel.md) — the vendor-neutral standard for generating and collecting telemetry:
+- **Three signals** (traces, metrics, logs) and how a `trace_id` + `span_id` + `parent_span_id` stitch a request's journey together.
+- **Data model** — spans, span context, attributes vs resources, and cardinality trade-offs; **OTLP** wire format and semantic conventions.
+- **Collector architecture** — receivers → processors → exporters, agent vs gateway deployment, and head vs tail sampling.
+- **Migration story** — moving a fragmented Prometheus + Jaeger stack to a Collector-centric OTel pipeline.
