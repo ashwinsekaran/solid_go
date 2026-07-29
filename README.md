@@ -26,8 +26,8 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 16 | **Rate Limit Middleware** | [ratelimit_middleware](./ratelimit_middleware) | Per-user token-bucket rate limiter applied as an httprouter middleware; each user gets their own bucket keyed by `X-User-ID` |
 | 17 | **URL Shortener** | [url_shortner](./url_shortner) | Short-code → full URL redirect service backed by an RWMutex cache and singleflight to prevent cache-stampede DB calls |
 | 18 | **Fan-in/Fan-out (Prime Finder)** | [fanin_fanout_prime_number](./fanin_fanout_prime_number) | CPU-bound prime search fanned out across `NumCPU` workers, then fanned back into a single result stream |
-| 19 | **Observability & Metrics** | [observability](./observability) | Cheat-sheet notes: percentiles/histograms, RED & USE methods, SLI/SLO/SLA, MTTA/MTTR/MTBF, cardinality, and alerting philosophy |
-| 20 | **OpenTelemetry (OTel)** | [otel](./otel) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
+| 19 | **Observability & Metrics** | [observability](observability/observability.md) | Cheat-sheet notes: percentiles/histograms, RED & USE methods, SLI/SLO/SLA, MTTA/MTTR/MTBF, cardinality, and alerting philosophy |
+| 20 | **OpenTelemetry (OTel)** | [otel](otel/otel.md) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
 
 ---
 
