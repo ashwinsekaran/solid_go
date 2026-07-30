@@ -28,6 +28,7 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 18 | **Fan-in/Fan-out (Prime Finder)** | [fanin_fanout_prime_number](./fanin_fanout_prime_number) | CPU-bound prime search fanned out across `NumCPU` workers, then fanned back into a single result stream |
 | 19 | **Observability & Metrics** | [observability](observability/observability.md) | Cheat-sheet notes: percentiles/histograms, RED & USE methods, SLI/SLO/SLA, MTTA/MTTR/MTBF, cardinality, and alerting philosophy |
 | 20 | **OpenTelemetry (OTel)** | [otel](otel/otel.md) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
+| 21 | **System Design — Data Ingestion** | [data_ingestion](system_design/data_ingestion.md) | Cheat-sheet notes: DMSP multi-tenant IoT metering platform — requirements, Kafka/KEDA ingest burst, Cassandra modelling, durability, retention/TWCS, and interview deep dives |
 
 ---
 
