@@ -29,6 +29,7 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 19 | **Observability & Metrics** | [observability](observability/observability.md) | Cheat-sheet notes: percentiles/histograms, RED & USE methods, SLI/SLO/SLA, MTTA/MTTR/MTBF, cardinality, and alerting philosophy |
 | 20 | **OpenTelemetry (OTel)** | [otel](otel/otel.md) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
 | 21 | **System Design — Data Ingestion** | [data_ingestion](system_design/data_ingestion.md) | Cheat-sheet notes: DMSP multi-tenant IoT metering platform — requirements, Kafka/KEDA ingest burst, Cassandra modelling, durability, retention/TWCS, and interview deep dives |
+| 22 | **System Design — Metrics & Monitoring** | [metrics_monitoring](system_design/metrics_monitoring.md) | Cheat-sheet notes: Dash0-like observability platform — unified OTEL/Kafka ingestion with per-signal stores (ClickHouse logs, TSDB metrics, Tempo traces), correlation, retention, and an interview script |
 
 ---
 
