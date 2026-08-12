@@ -30,6 +30,7 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 20 | **OpenTelemetry (OTel)** | [otel](otel/otel.md) | Cheat-sheet notes: the three signals, data model, Collector architecture, sampling strategies, and migration story |
 | 21 | **System Design — Data Ingestion** | [data_ingestion](system_design/data_ingestion.md) | Cheat-sheet notes: DMSP multi-tenant IoT metering platform — requirements, Kafka/KEDA ingest burst, Cassandra modelling, durability, retention/TWCS, and interview deep dives |
 | 22 | **System Design — Metrics & Monitoring** | [metrics_monitoring](system_design/metrics_monitoring.md) | Cheat-sheet notes: Dash0-like observability platform — unified OTEL/Kafka ingestion with per-signal stores (ClickHouse logs, TSDB metrics, Tempo traces), correlation, retention, and an interview script |
+| 23 | **Wikipedia Pageviews API** | [wikipedia_api](./wikipedia_api) | HTTP client for the Wikimedia Pageviews REST API: top articles per day, per-country view %, estimated views, and a concurrent (goroutine + `WaitGroup` + `Mutex`) scan of a full month |
 
 ---
 
@@ -109,6 +110,12 @@ Uses `httprouter` for routing, `envconfig` for config, and a graceful shutdown p
 
 ### GraphQL
 Schema-first with `gqlgen`. The schema declares types, queries, and mutations; `schema.resolvers.go` contains the implementations. An LRU query cache and Automatic Persisted Queries (APQ) are enabled for performance.
+
+### Wikipedia Pageviews API (HTTP client)
+A read-only client for the public [Wikimedia Pageviews REST API](https://wikimedia.org/api/rest_v1/#/Pageviews%20data). Demonstrates:
+- A shared `http.Client` with a timeout, `net/http` requests with the required descriptive `User-Agent` header, and status-code + empty-body error handling.
+- Decoding nested JSON into typed structs (`Data`/`Item`/`Article`, `CountryData`/`CountryItem`/`ViewsByCountry`). Per-country counts arrive privacy-bucketed as strings, so the numeric `views_ceil` field is used for all arithmetic.
+- Four demos: top-N articles for a day, each country's share of monthly views, an estimated per-country split of a day's top-article views, and a **concurrent** month-wide scan that fans out one goroutine per day and aggregates results under a `sync.Mutex`, joined with a `sync.WaitGroup`.
 
 ---
 
