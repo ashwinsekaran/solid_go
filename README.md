@@ -31,6 +31,8 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 21 | **System Design — Data Ingestion** | [data_ingestion](system_design/data_ingestion.md) | Cheat-sheet notes: DMSP multi-tenant IoT metering platform — requirements, Kafka/KEDA ingest burst, Cassandra modelling, durability, retention/TWCS, and interview deep dives |
 | 22 | **System Design — Metrics & Monitoring** | [metrics_monitoring](system_design/metrics_monitoring.md) | Cheat-sheet notes: Dash0-like observability platform — unified OTEL/Kafka ingestion with per-signal stores (ClickHouse logs, TSDB metrics, Tempo traces), correlation, retention, and an interview script |
 | 23 | **Wikipedia Pageviews API** | [wikipedia_api](./wikipedia_api) | HTTP client for the Wikimedia Pageviews REST API: top articles per day, per-country view %, estimated views, and a concurrent (goroutine + `WaitGroup` + `Mutex`) scan of a full month |
+| 24 | **REST Client + Server (net/http)** | [rest_api_clientandserver](./rest_api_clientandserver) | A stdlib-only user API (`ServeMux` routing, `RWMutex` store, bearer-auth middleware, graceful shutdown) plus a typed client that POSTs 50 users through a worker pool and reads them back with `errors.Is` handling |
+| 25 | **URL Shortener (native net/http)** | [rest_urlshortner_gonative](./rest_urlshortner_gonative) | In-memory shortener: random `crypto/rand` keys, redirect with hit counting, `/stats`, a TTL sweeper goroutine stopped via context, and graceful shutdown — race-clean under `-race` |
 
 ---
 
@@ -116,6 +118,18 @@ A read-only client for the public [Wikimedia Pageviews REST API](https://wikimed
 - A shared `http.Client` with a timeout, `net/http` requests with the required descriptive `User-Agent` header, and status-code + empty-body error handling.
 - Decoding nested JSON into typed structs (`Data`/`Item`/`Article`, `CountryData`/`CountryItem`/`ViewsByCountry`). Per-country counts arrive privacy-bucketed as strings, so the numeric `views_ceil` field is used for all arithmetic.
 - Four demos: top-N articles for a day, each country's share of monthly views, an estimated per-country split of a day's top-article views, and a **concurrent** month-wide scan that fans out one goroutine per day and aggregates results under a `sync.Mutex`, joined with a `sync.WaitGroup`.
+
+### REST Client + Server (net/http)
+A paired [server](rest_api_clientandserver/server_http_go/main.go) and [client](rest_api_clientandserver/client_http_go/main.go) for a `User` resource, standard library only:
+- **Server** — Go 1.22 method+path routing (`POST /users`, `GET /users/{id}`, `GET /users`), an `RWMutex`-guarded in-memory store, bearer-token `auth` middleware wrapping the whole mux, and graceful shutdown via `signal.Notify` + `http.Server.Shutdown`.
+- **Client** — a reusable `HttpClient` over `*http.Client` with context-aware requests; it POSTs 50 users through a **worker pool** (job/result channels + `WaitGroup`), then reads them back, distinguishing a 404 from a transport error via a sentinel `ErrNotFound` and `errors.Is`.
+- A `batch.sh` helper POSTs 1,000 users over `curl` for quick load testing.
+
+### URL Shortener (native net/http)
+A stdlib-only in-memory shortener ([main.go](rest_urlshortner_gonative/main.go)) focused on REST handlers + safe concurrent state:
+- `POST /url` validates the URL and returns a short key (reusing the existing key if the URL was already shortened); `GET /{key}` redirects and increments a hit counter; `GET /stats/{key}` returns usage.
+- Short keys come from `crypto/rand` + base64 URL encoding. The store is a plain `map` behind an `RWMutex` (no `sync.Map`), safe under `go run -race`.
+- A background **sweeper** goroutine evicts entries past a 10-minute TTL every 30s and is stopped cleanly through `context` cancellation, alongside graceful HTTP shutdown — no leaked goroutine.
 
 ---
 
