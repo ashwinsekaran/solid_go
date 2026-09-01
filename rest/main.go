@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"solid_go/rest/auth"
 	"solid_go/rest/handlers"
+	"solid_go/rest/health"
 	"solid_go/rest/metrics"
 	repo "solid_go/rest/repo"
 	"solid_go/rest/uc"
@@ -21,9 +22,13 @@ import (
 )
 
 // Config is populated from environment variables by envconfig.
-// HTTP_ADDRESS (split_words converts HttpAddress → HTTP_ADDRESS) defaults to ":8080".
+//   - HTTP_ADDRESS (split_words converts HttpAddress → HTTP_ADDRESS) defaults to ":8080".
+//   - SHUTDOWN_DELAY is the drain window after readiness flips to not-ready and before
+//     the listener closes, so the load balancer observes the not-ready state and stops
+//     routing new traffic first. In k8s this should be ≥ the readiness probe period.
 type Config struct {
-	HttpAddress string `split_words:"true" default:":8080"`
+	HttpAddress   string        `split_words:"true" default:":8080"`
+	ShutdownDelay time.Duration `split_words:"true" default:"5s"`
 }
 
 func main() {
@@ -50,16 +55,24 @@ func main() {
 	r.Handle("GET", "/:id", metrics.Middleware(m, handlers.GetHandler(getUc)))
 	r.Handle("POST", "/post", metrics.Middleware(m, handlers.PostHandler(SaveUc)))
 
-	// Two middleware, mounted at different levels:
+	// Readiness flag: starts not-ready, set true once wiring is complete below.
+	ready := &health.Readiness{}
+
+	// Outer http.ServeMux carries the infra endpoints that Kubernetes and Prometheus
+	// hit WITHOUT the app's bearer token, and forwards everything else ("/") to the
+	// auth-wrapped API router:
+	//   - /metrics scrape endpoint (also avoids a static-vs-wildcard clash with "/:id").
+	//   - /.well-known/live  and /.well-known/ready k8s probes.
 	//   - auth.Auth wraps the entire API router (like rest_api_clientandserver), so every
 	//     business route requires a bearer token.
-	//   - /metrics is served from an outer http.ServeMux, deliberately OUTSIDE auth so
-	//     Prometheus can scrape without a token. It also can't live on the httprouter itself:
-	//     a static "/metrics" route conflicts with the root wildcard "/:id" and httprouter
-	//     would panic. The ServeMux "/" pattern forwards everything else to the authed router.
 	root := http.NewServeMux()
 	root.Handle("/metrics", promhttp.HandlerFor(reg, promhttp.HandlerOpts{}))
+	root.HandleFunc("/.well-known/live", health.Live)
+	root.HandleFunc("/.well-known/ready", ready.Handler)
 	root.Handle("/", auth.Auth(r))
+
+	// Everything is wired — start accepting traffic.
+	ready.SetReady(true)
 
 	server := http.Server{
 		Addr:    config.HttpAddress,
@@ -83,6 +96,18 @@ func main() {
 	<-shutdown // block until OS sends a termination signal
 
 	log.Println("Shutting down server...")
+
+	// Fail readiness first so Kubernetes removes this pod from Service endpoints and
+	// stops routing new traffic here, while liveness stays green (no restart).
+	ready.SetReady(false)
+
+	// Wait out the drain window so the load balancer actually observes the not-ready
+	// state before we close the listener; otherwise new requests would race in until
+	// the socket closes. Liveness keeps returning 200 throughout.
+	if config.ShutdownDelay > 0 {
+		log.Printf("readiness not-ready; draining for %s before shutdown...", config.ShutdownDelay)
+		time.Sleep(config.ShutdownDelay)
+	}
 
 	// Give in-flight requests up to 5 seconds to complete before the process exits.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)

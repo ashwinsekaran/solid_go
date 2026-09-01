@@ -117,6 +117,10 @@ Two middleware are wired at the `main.go` layer, mirroring the standalone exampl
 
 Because `rest` routes on a root-level wildcard (`GET /:id`), a static `/metrics` route on the same `httprouter` would panic (wildcard vs. static conflict). So `/metrics` is served from an outer `http.ServeMux` — which also keeps the scrape endpoint outside auth, as Prometheus should not need the app token.
 
+**Kubernetes health probes** ([health](rest/health/health.go)) are served on the same outer `ServeMux`, also outside auth (the kubelet probes without credentials), at the well-known paths the repo's manifests already use ([k8s/d.yaml](k8s/d.yaml)):
+- `GET /.well-known/live` — **liveness**: always 200 while the process runs; it has no downstream dependencies so a transient DB/cache blip can't trigger a pod restart.
+- `GET /.well-known/ready` — **readiness**: 200 when ready, 503 otherwise. On `SIGTERM` the service flips readiness to not-ready, waits a `SHUTDOWN_DELAY` (default 5s) drain window so the load balancer deregisters the pod, and only then closes the listener and drains in-flight requests — liveness stays green throughout, giving zero-downtime rollouts. Wire them as `readinessProbe`/`livenessProbe` `httpGet` paths in the Deployment.
+
 ### GraphQL
 Schema-first with `gqlgen`. The schema declares types, queries, and mutations; `schema.resolvers.go` contains the implementations. An LRU query cache and Automatic Persisted Queries (APQ) are enabled for performance.
 
