@@ -18,7 +18,7 @@ A hands-on Go learning repo covering SOLID design principles, concurrency patter
 | 8 | **Worker Pool (HTTP)** | [worker_pool_api_processer](./worker_pool_api_processer) | Fixed-size goroutine pool processes HTTP-submitted jobs; request blocks until its result is ready |
 | 9 | **Rate Limiting (Token Bucket)** | [ratelimiting](./ratelimiting) | Token-bucket algorithm with mutex-protected state controls request throughput |
 | 10 | **gRPC** | [grpc](./grpc) | Unary, server-streaming, client-streaming, and bidirectional-streaming RPCs over Protocol Buffers |
-| 11 | **REST API** | [rest](./rest) | Layered HTTP server: handler → use-case → repository, with graceful shutdown |
+| 11 | **REST API** | [rest](./rest) | Onion/layered HTTP server: handler → use-case → repository (DIP via interface), plus bearer-token **auth** and Prometheus **metrics** middleware, with graceful shutdown |
 | 12 | **GraphQL** | [graphql](db/graphql) | Schema-first GraphQL API using gqlgen with query and mutation resolvers |
 | 13 | **PostgreSQL** | [postgres](db/postgres) | `database/sql` with JSONB columns, parameterised queries, and nested JSON marshalling |
 | 14 | **MongoDB** | [mongo](db/mongo) | CRUD + compound index creation + `explain` plan analysis via the official Go driver |
@@ -103,12 +103,19 @@ A single `repeatFunc` goroutine produces an unbounded stream of random integers.
 Service definitions live in `.proto` files; generated Go code is in `grpc/proto/`.
 
 ### REST API
-Three-layer architecture:
-- **handler** — HTTP parsing and response writing
-- **use-case** — business logic (thin closures here)
-- **repo** — data access
+Onion / layered architecture — each layer depends only on the interface of the layer below it (DIP):
+- **[ent](rest/ent/ent.go)** — the domain entity (`Data`), no dependencies
+- **[handler](rest/handlers/handlers.go)** — HTTP parsing and response writing
+- **[uc](rest/uc/uc.go)** — use-case business logic; declares the `Store` interface the repo satisfies
+- **[repo](rest/repo/repo.go)** — data access (in-memory map, swappable for a DB)
 
 Uses `httprouter` for routing, `envconfig` for config, and a graceful shutdown pattern (`signal.Notify` + `http.Server.Shutdown`).
+
+Two middleware are wired at the `main.go` layer, mirroring the standalone examples elsewhere in the repo:
+- **[auth](rest/auth/auth.go)** — bearer-token middleware (patterned on [rest_api_clientandserver](rest_api_clientandserver/server_http_go/main.go)). It wraps the whole API router as an `http.Handler`, so every business route requires `Authorization: Bearer …` or gets a 401.
+- **[metrics](rest/metrics/metrics.go)** — Prometheus middleware (patterned on [worker_pool_api_processer](worker_pool_api_processer/main.go)). It wraps each business handler per-route to record a request counter, an in-flight gauge, and a latency histogram.
+
+Because `rest` routes on a root-level wildcard (`GET /:id`), a static `/metrics` route on the same `httprouter` would panic (wildcard vs. static conflict). So `/metrics` is served from an outer `http.ServeMux` — which also keeps the scrape endpoint outside auth, as Prometheus should not need the app token.
 
 ### GraphQL
 Schema-first with `gqlgen`. The schema declares types, queries, and mutations; `schema.resolvers.go` contains the implementations. An LRU query cache and Automatic Persisted Queries (APQ) are enabled for performance.
